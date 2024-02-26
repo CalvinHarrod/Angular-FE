@@ -1,0 +1,167 @@
+
+<div class="container">
+    
+  <form class="col-md-4" #basicForm="ngForm" >
+  
+          <img src="assets/img/tvb-logo.png">
+          <!-- <p>Wellcome to access TVB RED FROM System</p> -->
+  
+                <div class="form-group">
+
+                    <label for="mobileNum">Support HK Mobile only</label>
+                    <div class="input-group mb-3" >
+                        <button class="btn btn-danger" 
+                                type="button" 
+                                (click)=sliderUpdate()
+                                id="input1" 
+                                [disabled]="inputMobile.length !== 8 || isButtonClicked  ">Submit
+                        </button>
+
+                        
+                        
+                        <input 
+                            required
+                            type="text"
+                            minlength="8" 
+                            maxlength="8"
+                            pattern="[0-9]{8}"
+                            class="form-control"
+                            id="mobileNum" 
+                            [(ngModel)]="inputMobile"
+                            name="mobile" 
+                            placeholder="Enter Mobile No: xxxxxxxx">
+ 
+                        <!-- <div class="alert alert-danger" 
+                            *ngIf="basicForm.touched && !basicForm.valid">
+                            Please input 8 digits number
+                        
+                        </div> -->
+                                
+                    </div>
+
+                </div>
+
+
+
+                <div class="form-group" *ngIf="sliderflag">
+                    <label for="slider">Pleas slide bar to full</label>
+                    <input 
+                      type="range" 
+                      class="form-range" 
+                      id="slider"
+                      name="slider"
+                      min="0" max="5" 
+                      step="0.1" 
+                      [(ngModel)]="sliderValue"
+                      (ngModelChange)="onSliderChange($event)"
+                      #slider="ngModel">
+                    <!-- <p>Current value: {{ sliderValue }}</p> -->
+                  </div>
+
+                  <div *ngIf="testflag" class="form-group d-grid gap-2">
+                      <button class="btn btn-primary" 
+                              type="button" 
+                              (click)=redirect()
+                              id="button-addon1" >Click to Test
+                      </button>
+
+                      <P></P>
+                  </div>
+
+
+                 <!-- <p>HOME Input Mobile is {{inputMobile}}</p> -->
+
+                 <!--Route to CaptCha-->
+                <!-- <div *ngIf="visible"> -->
+                <!--------------------------------------->
+                <!-- <div *ngIf="basicForm.valid"> -->
+<!-- 
+                    <app-captcha (capRtnFunction)="capRtnFunction($event)"></app-captcha> -->
+                <!-- </div> -->
+                 <!--------------------------------------->
+
+                <!--Display when click Captcha-->
+                <!--------------------------------------->
+                <!-- <div *ngIf="captchaReturn"> -->
+                 <!--------------------------------------->
+                 <!-- <p>Visible value is {{visible}}</p> -->
+                <div *ngIf="visible">
+                    <app-otp 
+                    [otpMobile]='inputMobile'
+                    (triggerDownCount)="downCount()"
+                    (otpRtnFunction1)="otpRtnFunction1($event)"
+                    (otpRtnFunction2)="otpRtnFunction2($event)" ></app-otp>
+                </div> 
+              
+                <div *ngIf="inputPasswordField">
+                <!-- <div *ngIf="true"> -->
+                    <p></p>
+                <!-- <div *ngIf="true"> -->
+                    <div class="input-group" style="align-items: center;">
+                        <label for="passwordPart1"></label>
+                        <input 
+                            required
+                            type="password"
+                            minlength="4" 
+                            maxlength="4"
+                            pattern="\d{4}"
+                            class="form-control"
+                            id="passwordPart1" 
+                            [(ngModel)]="inputPasswordPart1"
+                            name="passwordFieldPart1" 
+                            placeholder="Password XXXX">
+                      
+                            <div class="input-group-append">
+                                <span 
+                                    class="input-group-text" 
+                                    style="font-size: 30px; color: black; border: none; background-color: white;">-</span>
+                              </div>
+                      
+                        <label for="passwordPart2"></label>
+                        <input 
+                            required
+                            type="password"
+                            minlength="4" 
+                            maxlength="4"
+                            pattern="\d{4}"
+                            class="form-control"
+                            id="passwordPart2" 
+                            [(ngModel)]="inputPasswordPart2"
+                            name="passwordFieldPart2" 
+                            placeholder="Password YYYY">                     
+                        
+                    </div>
+
+                    <div>
+                        <p style="color: red; font-size: small;">
+                            The password will expire on after {{countdown}} seconds</p>
+                    </div>
+                    
+                    
+                </div>
+
+                <div *ngIf="inputPasswordPart1.length === 4 && inputPasswordPart2.length === 4" class="form-group d-grid gap-2">
+                    <button 
+                    class="btn btn-success" 
+                    type="submit" 
+                    (click)="auth()">Login</button> 
+                </div>
+
+                <!-- <p>Input Password Field status is {{inputPasswordField}}</p> -->
+                <!-- <p>Password is {{otpPassword}}</p> -->
+                <!-- <p>Input Password is {{userData.passwordField}}</p>  -->
+
+                <router-outlet></router-outlet>
+    </form>  
+
+    
+
+</div>
+
+
+   
+
+ 
+  
+  
+  

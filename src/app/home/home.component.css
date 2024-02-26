@@ -1,0 +1,29 @@
+mat-slider {
+    width: 50%;
+  }
+
+  @keyframes animateBackground {
+    from { background-position: 0 0; }
+    to { background-position: 0 100px; }
+  }
+
+  body {
+    background-image: url('/Angular/test/red-form-ver18/src/assets/img/tvb-city.png');
+    animation: animateBackground 5s linear infinite;
+  }
+/* 
+  input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background: #4CAF50;
+    cursor: pointer;
+  }
+  
+  input[type='range']::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    background: #4CAF50;
+    cursor: pointer;
+  } */
