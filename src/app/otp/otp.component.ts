@@ -7,8 +7,9 @@ import { Router } from '@angular/router';
 
 import { MobileCheckService } from '../services/mobile-check.service';
 import { SmsService } from '../services/sms.service';
-
-
+import { TokenService } from '../services/token.service';
+import { SharedService } from '../services/share.service';
+import { environment } from '../../environments/environment';
 
 
 @Component({
@@ -35,6 +36,8 @@ export class OtpComponent implements OnInit {
 
   checkresult: boolean = false; 
   sentResult: boolean = false;
+
+  
   
 
   // constructor(private http: HttpClient){}
@@ -42,9 +45,13 @@ export class OtpComponent implements OnInit {
     private http: HttpClient, 
     private router: Router, 
     private mobileCheckService: MobileCheckService,
-    private smsService: SmsService){}
+    private smsService: SmsService,
+    private tokenService: TokenService,
+    private sharedService: SharedService){}
 
   ngOnInit(): void {}
+
+  
 
   generatePassword() {
     const min = 1000; // Minimum 4-digit number
@@ -97,20 +104,100 @@ export class OtpComponent implements OnInit {
    window.location.reload()
  }
 
-  queryBackend() {
-    this.mobileCheckService.checkMobile(this.otpMobile).subscribe(
-      res => {
-        this.checkresult = res;
-        this.otpButton = true;
-        console.log("this.checkresult b4 - this.handleResponse  " + this.checkresult);
-        this.handleResponse();
-      },
-      err => {
-        console.error('Error:', err);
-        alert("An error occurred while checking the mobile number. Please try again later.");
+//  queryBackend() {
+//   this.mobileCheckService.checkMobile(this.otpMobile).subscribe(
+//     res => {
+//       this.checkresult = res;
+//       this.otpButton = true;
+//       console.log("this.checkresult b4 - this.handleResponse  " + this.checkresult);
+//       this.handleResponse();
+//     },
+//     err => {
+//       console.error('Error:', err);
+//       alert("An error occurred while checking the mobile number. Please try again later.");
+//     }
+//   );
+// }
+
+initToken() {
+  // If the user doesn't have a token, get a new one
+  this.tokenService.getInitToken(this.otpMobile).subscribe(
+    tokenRes => {
+      console.log('Init token received:', tokenRes.token);
+      // Save the new token in local storage
+      localStorage.setItem('token', tokenRes.token);
+
+      // Log the token after it's saved to local storage
+      console.log('Token saved to local storage:', localStorage.getItem('token'));
+
+      // Then call handleResponse
+      this.handleResponse();
+    },
+    tokenErr => {
+      console.error('Error requesting init token:', tokenErr);
+      alert("An error occurred while requesting an init token. Please try again later.");
+    }
+  );
+}
+
+queryBackend() {
+  this.mobileCheckService.checkMobile(this.otpMobile).subscribe(
+    res => {
+      this.checkresult = res;
+      this.otpButton = true;
+      console.log("this.checkresult b4 - this.handleResponse  " + this.checkresult);
+
+      // Get the token from local storage
+      let token = localStorage.getItem('token');
+
+      console.log('Local storage:', localStorage);
+
+      console.log('Token before check:', token);
+
+      if (token) {
+
+        // Log the token
+        console.log('Token inside check:', token);
+
+        // If the user already has a token, authenticate it
+        this.tokenService.authenticateToken(token, this.otpMobile).subscribe(
+          authRes => {
+            console.log('Token authenticated:', authRes);
+
+            // Then call handleResponse
+            //this.handleResponse();
+            // Call Redirect and bypass sms authentication
+            this.sharedService.triggerRedirect();
+          },
+          authErr => {
+            if (authErr.status === 401) {
+              console.error('Token has expired:', authErr);
+              this.initToken();
+              //this.handleResponse();
+            } else if (authErr.status === 403) {
+              console.error('Token not found:', authErr);
+              this.initToken();
+              //this.handleResponse();
+            } else {
+              console.error('An error occurred while authenticating the token:', authErr);
+              // Redirect to homepage
+              this.router.navigate([environment.homePage]);
+            }
+          }
+        );
+      } else {
+        // If the user doesn't have a token, get a new one
+        this.initToken();
       }
-    );
-  }
+    },
+    err => {
+      console.error('Error:', err);
+      alert("An error occurred while checking the mobile number. Please try again later.");
+    }
+  );
+}
+
+ 
 
   handleResponse() {
     if (this.checkresult) {
@@ -131,6 +218,11 @@ export class OtpComponent implements OnInit {
     }
   }
 
+  // validateMobile(mobile: string) {
+  //   this.tokenService.retrieveToken(mobile).subscribe();
+  // }
+
+
   checkMobile() {
     this.otpButton = true;
     console.log("checkMobile - Mobile number is " + this.otpMobile);
@@ -138,6 +230,9 @@ export class OtpComponent implements OnInit {
     
     //this.handleResponse();
   }
+
+
+ 
 
   
 }

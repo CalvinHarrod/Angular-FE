@@ -3,10 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-if (environment.production) {
-  window.console.log = function() {};
-  window.console.error = function() {};
-}
+// if (environment.production) {
+//   window.console.log = function() {};
+//   window.console.error = function() {};
+// }
 
 @Injectable({
   providedIn: 'root'

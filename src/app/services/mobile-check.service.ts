@@ -7,10 +7,10 @@ import { SecurityContext } from '@angular/core'; // Import SecurityContext from 
 
 import { environment } from '../../environments/environment';
 
-if (environment.production) {
-  window.console.log = function() {};
-  window.console.error = function() {};
-}
+// if (environment.production) {
+//   window.console.log = function() {};
+//   window.console.error = function() {};
+// }
 
 
 @Injectable({
@@ -22,29 +22,16 @@ export class MobileCheckService {
     'eform-application/ajax/checkMobile?mobile=';
 
   // constructor(private http: HttpClient) { }
-  constructor(private http: HttpClient, private sanitizer: DomSanitizer) { }
-
-  // checkMobile(mobile: string) {
-  //   return this.http.get<boolean>(this.CHECK_URL + mobile);
-  // }
-
-  // checkMobile(mobile: string) {
-  //   let encodedUrl = btoa(this.CHECK_URL + mobile);
-  //   console.log('Requesting URL:', encodedUrl);
-  //   return this.http.get<boolean>(atob(encodedUrl));
-  // }
+  constructor(private http: HttpClient) { }
 
   checkMobile(mobile: string) {
     let url = this.CHECK_URL + mobile;
-    let sanitizedUrl = this.sanitizer.sanitize(SecurityContext.URL, url);
-    if (sanitizedUrl) {
-      console.log('Requesting URL:', sanitizedUrl);
-      return this.http.get<boolean>(sanitizedUrl);
-    } else {
-      // Handle the error
-    }
-    return throwError('Sanitized URL is null.'); // Add this line to return a value in case of error
+    console.log('Requesting URL:', url);
+    return this.http.get<boolean>(url);
   }
+
+  
+
 
 }
 
