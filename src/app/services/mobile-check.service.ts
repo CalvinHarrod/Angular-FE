@@ -18,16 +18,29 @@ import { environment } from '../../environments/environment';
 })
 export class MobileCheckService {
 
-  private CHECK_URL = environment.checkUrl + 
+  private CHECK_URL = environment.checkMobile + 
     'eform-application/ajax/checkMobile?mobile=';
 
   // constructor(private http: HttpClient) { }
   constructor(private http: HttpClient) { }
 
-  checkMobile(mobile: string) {
+  // checkMobile(mobile: string) {
+  //   let url = this.CHECK_URL + mobile;
+  //   console.log('Requesting URL:', url);
+  //   return this.http.get<boolean>(url);
+  // }
+
+  // checkMobile(mobile: string) {
+  //   let url = this.CHECK_URL + mobile;
+  //   console.log('Requesting URL:', url);
+  //   return this.http.get<boolean>(url);
+  // }
+
+
+  checkMobile(mobile: string): Observable<{result: boolean, message: string}> {
     let url = this.CHECK_URL + mobile;
     console.log('Requesting URL:', url);
-    return this.http.get<boolean>(url);
+    return this.http.get<{result: boolean, message: string}>(url);
   }
 
   

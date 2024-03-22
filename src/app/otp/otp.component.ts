@@ -12,6 +12,7 @@ import { SharedService } from '../services/share.service';
 import { environment } from '../../environments/environment';
 
 
+
 @Component({
   selector: 'app-otp',
   templateUrl: './otp.component.html',
@@ -62,27 +63,44 @@ export class OtpComponent implements OnInit {
   }
 
 
+  // sentSMS(){
+
+  //     this.smsService.sendSms(
+  //       this.otpMobile,
+  //       '&smsMessage=',
+  //       this.message,
+  //       this.password
+  //       ).subscribe(
+  //         res => {
+  //           this.sentResult = res;
+  //           console.log("Sent SMS - Return Result is " + this.sentResult);
+  //         },
+  //         err => {
+  //           console.error('Error:', err);
+  //           alert("An error occurred while sent SMS. Please try again later.");
+  //         }
+  //       );
+
+  //     console.log("Sent SMS - Mobile number is " + this.otpMobile);
+      
+  // }
+
   sentSMS(){
 
-      this.smsService.sendSms(
-        this.otpMobile,
-        '&smsMessage=',
-        this.message,
-        this.password
-        ).subscribe(
-          res => {
-            this.sentResult = res;
-            console.log("Sent SMS - Return Result is " + this.sentResult);
-          },
-          err => {
-            console.error('Error:', err);
-            alert("An error occurred while sent SMS. Please try again later.");
-          }
-        );
-
-      console.log("Sent SMS - Mobile number is " + this.otpMobile);
-      
-  }
+    this.smsService.sendSms(this.otpMobile, this.password).subscribe(
+      res => {
+        this.sentResult = res;
+        console.log("Sent SMS - Return Result is " + this.sentResult);
+      },
+      err => {
+        console.error('Error:', err);
+        alert("An error occurred while sent SMS. Please try again later.");
+      }
+    );
+    
+    console.log("Sent SMS - Mobile number is " + this.otpMobile);
+    
+}
 
   openToggle(){
     this.router.navigate(['/fail']);
@@ -140,99 +158,114 @@ initToken() {
   );
 }
 
+
 queryBackend() {
   this.mobileCheckService.checkMobile(this.otpMobile).subscribe(
     res => {
-      this.checkresult = res;
-      this.otpButton = true;
-      console.log("this.checkresult b4 - this.handleResponse  " + this.checkresult);
 
-      // Get the token from local storage
-      let token = localStorage.getItem('token');
+            console.log('Response from checkMobile:', JSON.stringify(res, null, 2));
+            // alert("Response from checkMobile: " + res); 
 
-      console.log('Local storage:', localStorage);
+            console.log('Response result:', res.result);
+            console.log('Response message:', res.message);
 
-      console.log('Token before check:', token);
+            // alert("check respond result ");
 
-      if (token) {
-
-        // Log the token
-        console.log('Token inside check:', token);
-
-        // If the user already has a token, authenticate it
-        this.tokenService.authenticateToken(token, this.otpMobile).subscribe(
-          authRes => {
-            console.log('Token authenticated:', authRes);
-
-            // Then call handleResponse
-            //this.handleResponse();
-            // Call Redirect and bypass sms authentication
-            this.sharedService.triggerRedirect();
-          },
-          authErr => {
-            if (authErr.status === 401) {
-              console.error('Token has expired:', authErr);
-              this.initToken();
-              //this.handleResponse();
-            } else if (authErr.status === 403) {
-              console.error('Token not found:', authErr);
-              this.initToken();
-              //this.handleResponse();
-            } else {
-              console.error('An error occurred while authenticating the token:', authErr);
-              // Redirect to homepage
-              this.router.navigate([environment.homePage]);
+            // Handle Special number
+            if (res.result === true && res.message === "jump") {
+                console.log('Special Jump from checkMobile:', res.result, 'Response message:', res.message);
+                this.sharedService.triggerRedirect();
+                return;
             }
-          }
-        );
-      } else {
-        // If the user doesn't have a token, get a new one
-        this.initToken();
-      }
+
+              if (res.result === true ) {        
+              console.log('Response true from checkMobile:', res.result, 'Response message:', res.message);
+              this.otpButton = true;
+              this.checkresult = true;
+              // Get the token from local storage
+              let token = localStorage.getItem('token');
+              console.log('Local storage:', localStorage);
+              console.log('Token before check:', token);
+
+              if (token) {
+
+                    // Log the token
+                    console.log('Token inside check:', token);
+
+                    // If the user already has a token, authenticate it
+                    this.tokenService.authenticateToken(token, this.otpMobile).subscribe(
+                      authRes => {
+                        console.log('Token authenticated:', authRes);
+
+                        // Then call handleResponse
+                        //this.handleResponse();
+                        // Call Redirect and bypass sms authentication
+                        this.sharedService.triggerRedirect();
+                      },
+
+                      authErr => {
+                        if (authErr.status === 401) {
+                            console.error('Token has expired:', authErr);
+                            this.initToken();
+                            //this.handleResponse();
+                          } else if (authErr.status === 403) {
+                          console.error('Token not found:', authErr);
+                          this.initToken();
+                          //this.handleResponse();
+                          } else {
+                          console.error('An error occurred while authenticating the token:', authErr);
+                          // Redirect to homepage
+                          this.router.navigate([environment.homePage]);
+                        }
+                      }
+                    ); // end of subscribe
+
+              } else {
+                // If the user doesn't have a token, get a new one
+                this.initToken();
+              }
+            }else{
+              alert("Your input mobile is not valid. Please try again later.");
+              this.backTohomepage();
+              this.reloadPage();
+            }
+
     },
     err => {
-      console.error('Error:', err);
-      alert("An error occurred while checking the mobile number. Please try again later.");
+    console.error('Error:', err);
+    alert("An error occurred while checking the mobile number. Please try again later.");
     }
   );
 }
 
- 
-
-  handleResponse() {
-    if (this.checkresult) {
-      console.log("this.otpButton b4 -  " + this.checkresult);
-      this.otpButton = true;
-      console.log("this.otpButton aft -  " + this.checkresult);
-
-      this.generatePassword();
-      this.sentSMS(); // check-point 20231225
-      this.triggerDownCount.emit();
-      this.otpRtnFunction2.emit(this.checkresult);
-      this.otpRtnFunction1.emit(this.password);
-    } else {
-      alert("Your Mobile Number is not registered. Please contact your administrator.");
-      this.otpButton = true;
-      this.backTohomepage();
-      this.reloadPage();
-    }
-  }
-
-  // validateMobile(mobile: string) {
-  //   this.tokenService.retrieveToken(mobile).subscribe();
-  // }
 
 
-  checkMobile() {
+handleResponse() {
+  if (this.checkresult) {
+    console.log("this.otpButton b4 -  " + this.checkresult);
     this.otpButton = true;
-    console.log("checkMobile - Mobile number is " + this.otpMobile);
-    this.queryBackend();
-    
-    //this.handleResponse();
+    console.log("this.otpButton aft -  " + this.checkresult);
+
+    this.generatePassword();
+    this.sentSMS(); // check-point 20231225
+    this.triggerDownCount.emit();
+    this.otpRtnFunction2.emit(this.checkresult);
+    this.otpRtnFunction1.emit(this.password);
+  } else {
+    alert("Your Mobile Number is not registered. Please contact your administrator.");
+    this.otpButton = true;
+    this.backTohomepage();
+    this.reloadPage();
   }
+}
 
-
- 
+checkMobile() {
+  this.otpButton = true;
+  console.log("checkMobile - Mobile number is " + this.otpMobile);
+  this.queryBackend();
+  
+  //this.handleResponse();
+}
 
   
 }

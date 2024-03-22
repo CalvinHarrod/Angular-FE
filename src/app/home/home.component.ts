@@ -11,7 +11,8 @@ import { HttpClient } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SharedService } from '../services/share.service';
 import { TokenService } from '../services/token.service';
-
+import { CheckEmailService } from '../services/check-email.service';
+import { UpdatePwdService } from '../services/update-pwd.service'; 
 
 // if (environment.production) {
 //   window.console.log = function() {};
@@ -32,7 +33,9 @@ export class HomeComponent implements  OnInit {
         private http: HttpClient,
         private sanitizer: DomSanitizer,
         private sharedService: SharedService,
-        private tokenService: TokenService) { 
+        private tokenService: TokenService,
+        private checkEmailService: CheckEmailService,
+        private updatePwdService: UpdatePwdService) { 
 
           // used for calling from otp component
           this.sharedService.triggerRedirect$.subscribe(() => {
@@ -56,9 +59,6 @@ export class HomeComponent implements  OnInit {
 
     sliderValue: number = 0;
 
-   
-    inputMobile: string = '';
-
     countdown: number = 0;
     minutes: number = 0;
     seconds: number = 0;
@@ -73,11 +73,66 @@ export class HomeComponent implements  OnInit {
     inputPasswordPart1: string = '';
     inputPasswordPart2: string = '';
 
+    inputField: any;
+    inputMobile: string = '';
+    inputEmail: string = '';
+    
+
     private BE01_URL = environment.reDirectUrl;
     // private BE01_URL = 'http://10.161.169.13:9700/eform-application/form_main?mobile=';
  
   
     ngOnInit(): void {}
+
+    reloadPage(){
+      window.location.reload()
+    }  
+
+    backTohomepage(){
+      this.router.navigate(['']);
+    }
+  
+    checkInputType(input: string) {
+      // Regular expression for email
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    
+      // Regular expression for Hong Kong mobile number
+      const mobileRegex = /^[0-9]{8}$/;
+    
+      if (emailRegex.test(input)) {
+        console.log('Input is an email');
+        this.inputEmail = input;
+        this.sliderflag = true; // Add this line
+      } else if (mobileRegex.test(input)) {
+        console.log('Input is a mobile number');
+        this.inputMobile = input;
+        this.sliderflag = true; // Add this line
+      } else {
+        console.log('Input is not a valid email or mobile number');
+        // Display an alert message
+        alert('Input invalid, please try again');
+        this.backTohomepage();
+        this.reloadPage();
+        this.sliderflag = false; // Add this line
+      }
+    }
+
+    checkEmailValidity(email: string) {
+      this.checkEmailService.isValidEmail(email).subscribe(
+        isValid => {
+          if (isValid) {
+            console.log('Email is valid');
+          } else {
+            console.log('Email is not valid');
+          }
+        },
+        error => {
+          console.error('Error checking email validity:', error);
+        }
+      );
+    }
+
+ 
 
     updatePassword() {
       this.inputPassword = this.inputPasswordPart1 + "-" + this.inputPasswordPart2;
@@ -96,7 +151,8 @@ export class HomeComponent implements  OnInit {
       let token = localStorage.getItem('token');
       console.log('Bring Token to redirect:', token);
       // const token = 'your-token-here'; // Replace with your actual token
-      const redirectUrl = `http://10.161.169.13:9800/reDirect/${this.inputMobile}?token=${token}`;
+      // const redirectUrl = `http://10.161.169.13:9800/reDirect/${this.inputMobile}?token=${token}`;
+      const redirectUrl = `${this.BE01_URL}${this.inputMobile}?token=${token}`;
       console.log('Redirecting to URL:', redirectUrl);
     
       window.location.href = redirectUrl;
@@ -114,25 +170,20 @@ export class HomeComponent implements  OnInit {
       );
     }
 
-
-
-    
-
-    // redirect() {
-    //   let encodedUrl = btoa(this.BE01_URL + this.inputMobile);
-    //   console.log('Redirecting to URL:', encodedUrl);
-    //   window.location.href = atob(encodedUrl);
-    // }
-
-    // redirect() {
-    //   let url = this.BE01_URL + this.inputMobile;
-    //   let sanitizedUrl = this.sanitizer.sanitize(SecurityContext.URL, url);
-    //   if (sanitizedUrl) {
-    //     window.location.href = sanitizedUrl;
-    //   } else {
-    //     // Handle the error
-    //   }
-    // }
+    callUpdatePassword(token: string, mobile: string, ) {
+      this.updatePwdService.updatePassword(token, mobile).subscribe(
+        response => {
+          console.log('Password updated successfully');
+          this.redirect();
+        },
+        error => {
+          console.error('Error updating password:', error);
+          alert("Password incorrect, Please try again");
+          this.backTohomepage()
+          this.reloadPage()
+        }
+      );
+    }
 
 
     downCount() {
@@ -154,43 +205,13 @@ export class HomeComponent implements  OnInit {
 
     }
 
-    backTohomepage(){
-      this.router.navigate(['']);
-    }
-
-    //Reload the component
-  //   reloadComponent(self:boolean,urlToNavigateTo ?:string){
-  //   const url=self ? this.router.url :urlToNavigateTo;
-  //   this.router.navigateByUrl('/',{skipLocationChange:true}).then(()=>{
-  //     this.router.navigate([`/${url}`])
-
-  //   })
-  // }
-
-  reloadPage(){
-    window.location.reload()
-  }
-
 
     update(){
 
-      // if(this.inputMobile == '91234567'){
-      //   this.testflag = true;
-      //   this.sliderflag = false;
-      // }else if(this.inputMobile == '69876543'){
-      //   this.testflag = true;
-      //   this.sliderflag = false;
-      // }else if(this.inputMobile == '61234567'){
-      //   this.testflag = true;
-      //   this.sliderflag = false;
-      // }else if(this.inputMobile == '12345678'){
-      //   this.testflag = true;
-      //   this.sliderflag = false;
-      // }else {
         this.testflag = false;
         this.visible = true;
         this.sliderflag = false;
-      //}      
+    
     }
 
     capRtnFunction(data: boolean){
@@ -213,9 +234,15 @@ export class HomeComponent implements  OnInit {
       this.updatePassword();
 
       if(this.otpPassword == this.inputPassword){
-        // alert("Login Successfull");
-        //this.authenticateToken();
+
+        let token = localStorage.getItem('token');
+        console.log('Bring Token to update pwd:', token);
+        if (token !== null) {
+         this.callUpdatePassword(token, this.inputMobile );
+        }
+
         this.redirect();
+     
 
       }else{
         // console.log("OTP password is "+ this.otpPassword);
@@ -235,7 +262,8 @@ export class HomeComponent implements  OnInit {
     }
 
     sliderUpdate(){
-      
+      this.checkInputType(this.inputField)
+      //this.checkEmailValidity(this.inputEmail);
       this.isButtonClicked = true;
       this.sliderflag = true;
     }

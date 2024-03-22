@@ -5,21 +5,28 @@
   
           <img src="assets/img/tvb-logo.png">
           <!-- <p>Wellcome to access TVB RED FROM System</p> -->
-  
+            
                 <div class="form-group">
 
                     <label for="mobileNum">Support HK Mobile only</label>
                     <div class="input-group mb-3" >
-                        <button class="btn btn-danger" 
+                        <!-- <button class="btn btn-danger" 
                                 type="button" 
                                 (click)=sliderUpdate()
                                 id="input1" 
                                 [disabled]="inputMobile.length !== 8 || isButtonClicked  ">Submit
+                        </button> -->
+
+                        <button class="btn btn-danger" 
+                            type="button" 
+                            (click)=sliderUpdate()
+                            id="input1" 
+                            [disabled]="!inputField || isButtonClicked">Submit
                         </button>
 
                         
                         
-                        <input 
+                        <!-- <input 
                             required
                             type="text"
                             minlength="8" 
@@ -29,7 +36,18 @@
                             id="mobileNum" 
                             [(ngModel)]="inputMobile"
                             name="mobile" 
-                            placeholder="Enter Mobile No: xxxxxxxx">
+                            placeholder="Enter Mobile No: xxxxxxxx"> -->
+
+
+                        <input 
+                        required
+                        type="text"
+                        class="form-control"
+                        id="inputField" 
+                        [(ngModel)]="inputField"
+                        name="inputField" 
+                        placeholder="Enter Mobile No or Email">
+                        <!-- (change)="checkInputType(inputField)"> -->
  
                         <!-- <div class="alert alert-danger" 
                             *ngIf="basicForm.touched && !basicForm.valid">
