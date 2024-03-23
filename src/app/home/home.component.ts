@@ -178,7 +178,7 @@ export class HomeComponent implements  OnInit {
         },
         error => {
           console.error('Error updating password:', error);
-          alert("Password incorrect, Please try again");
+          //alert("Password incorrect, Please try again");
           this.backTohomepage()
           this.reloadPage()
         }
