@@ -14,10 +14,10 @@ import { TokenService } from '../services/token.service';
 import { CheckEmailService } from '../services/check-email.service';
 import { UpdatePwdService } from '../services/update-pwd.service'; 
 
-// if (environment.production) {
-//   window.console.log = function() {};
-//   window.console.error = function() {};
-// }
+if (environment.production) {
+  window.console.log = function() {};
+  window.console.error = function() {};
+}
 
 
 @Component({
@@ -26,26 +26,13 @@ import { UpdatePwdService } from '../services/update-pwd.service';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements  OnInit {
+
   
-  constructor(
-
-        private router: Router,
-        private http: HttpClient,
-        private sanitizer: DomSanitizer,
-        private sharedService: SharedService,
-        private tokenService: TokenService,
-        private checkEmailService: CheckEmailService,
-        private updatePwdService: UpdatePwdService) { 
-
-          // used for calling from otp component
-          this.sharedService.triggerRedirect$.subscribe(() => {
-            this.redirect();
-          });
-
-  }
-
     title = 'testFORM';   
 
+    //control second page
+    firstPage:boolean = true;
+    secondPage:boolean = false;
 
 
     // visible:boolean = false;
@@ -76,12 +63,30 @@ export class HomeComponent implements  OnInit {
     inputField: any;
     inputMobile: string = '';
     inputEmail: string = '';
-    
+
+    newGenToken: any;
 
     private BE01_URL = environment.reDirectUrl;
-    // private BE01_URL = 'http://10.161.169.13:9700/eform-application/form_main?mobile=';
- 
-  
+
+    constructor(
+
+      private router: Router,
+      private http: HttpClient,
+      private sanitizer: DomSanitizer,
+      private sharedService: SharedService,
+      private tokenService: TokenService,
+      private checkEmailService: CheckEmailService,
+      private updatePwdService: UpdatePwdService) { 
+
+        // used for calling from otp component
+        this.sharedService.triggerRedirect$.subscribe(() => {
+          this.redirect();
+        });
+
+        this.sharedService.currentToken.subscribe(token => this.newGenToken = token);
+    }
+    
+
     ngOnInit(): void {}
 
     reloadPage(){
@@ -90,6 +95,15 @@ export class HomeComponent implements  OnInit {
 
     backTohomepage(){
       this.router.navigate(['']);
+    }
+
+    getTokenFromLocalStorage() {
+      return localStorage.getItem('token');
+    }
+
+    setPages() {
+      this.firstPage = false;
+      this.secondPage = true;
     }
   
     checkInputType(input: string) {
@@ -138,20 +152,11 @@ export class HomeComponent implements  OnInit {
       this.inputPassword = this.inputPasswordPart1 + "-" + this.inputPasswordPart2;
     }
 
-    // redirect() {
-    //   console.log('Redirecting to URL:', this.BE01_URL + this.inputMobile);
-    //   //Update Token
-    //   //this.callUpdateToken();
-    //   // window.location.href = this.BE01_URL + '\?' + 'mobile=' + this.inputMobile;
-    //   window.location.href = this.BE01_URL + this.inputMobile;
-    // }
 
     redirect() {
       // Get the token from local storage
       let token = localStorage.getItem('token');
       console.log('Bring Token to redirect:', token);
-      // const token = 'your-token-here'; // Replace with your actual token
-      // const redirectUrl = `http://10.161.169.13:9800/reDirect/${this.inputMobile}?token=${token}`;
       const redirectUrl = `${this.BE01_URL}${this.inputMobile}?token=${token}`;
       console.log('Redirecting to URL:', redirectUrl);
     
@@ -170,8 +175,8 @@ export class HomeComponent implements  OnInit {
       );
     }
 
-    callUpdatePassword(token: string, mobile: string, ) {
-      this.updatePwdService.updatePassword(token, mobile).subscribe(
+    callUpdatePassword( ) {
+      this.updatePwdService.updatePassword(this.newGenToken, this.inputMobile).subscribe(
         response => {
           console.log('Password updated successfully');
           this.redirect();
@@ -222,31 +227,21 @@ export class HomeComponent implements  OnInit {
 
     otpRtnFunction1(data: any){
       this.otpPassword = data;
-      // this.otpPassword = '12345678';
     }
 
     otpRtnFunction2(data: any){
       this.inputPasswordField = data;
     }
 
-    auth(){
 
+    auth(){
       this.updatePassword();
 
       if(this.otpPassword == this.inputPassword){
 
-        let token = localStorage.getItem('token');
-        console.log('Bring Token to update pwd:', token);
-        if (token !== null) {
-         this.callUpdatePassword(token, this.inputMobile );
-        }
-
-        this.redirect();
-     
-
+        console.log("Passwork is OK, handle update password");
+        this.callUpdatePassword();
       }else{
-        // console.log("OTP password is "+ this.otpPassword);
-        // console.log("Input password is "+ this.inputPassword);
         alert("Login Failed, Please try again");
         console.log("Login Failed, delete token and redirect to homepage");
         this.deleteUserToken(this.inputMobile);

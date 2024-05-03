@@ -15,7 +15,6 @@ export class CaptchaComponent implements OnInit {
 
   constructor(){
     this.captcha = '';
-    // this.email = 'tamchihong@gmail.com';
     this.email = 'tvb.redform@gmail.com';
   }
 

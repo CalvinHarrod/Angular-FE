@@ -7,10 +7,122 @@ mat-slider {
     to { background-position: 0 100px; }
   }
 
+    /* Extra small devices (portrait phones, less than 576px) */
+  @media (max-width: 575.98px) { 
+    .btn-xl {
+        padding: 2vh 2vw;
+        font-size: 3vw;
+    }
+  }
+
+  /* Small devices (landscape phones, 576px and up) */
+  @media (min-width: 576px) and (max-width: 767.98px) { 
+    .btn-xl {
+        padding: 2vh 2vw;
+        font-size: 2vw;
+    }
+  }
+
+  /* Medium devices (tablets, 768px and up) */
+  @media (min-width: 768px) and (max-width: 991.98px) { 
+    .btn-xl {
+        padding: 2vh 2vw;
+        font-size: 1.5vw;
+    }
+  }
+
+  /* Large devices (desktops, 992px and up) */
+  @media (min-width: 992px) and (max-width: 1199.98px) { 
+    .btn-xl {
+        padding: 2vh 2vw;
+        font-size: 1vw;
+    }
+  }
+
+  /* Extra large devices (large desktops, 1200px and up) */
+  @media (min-width: 1200px) { 
+    .btn-xl {
+        padding: 2vh 2vw;
+        font-size: 0.8vw;
+    }
+  }
+
   body {
     background-image: url('/Angular/test/red-form-ver18/src/assets/img/tvb-city.png');
     animation: animateBackground 5s linear infinite;
   }
+
+  .center-text {
+    text-align: center;
+    color: red; /* add this line */
+  }
+
+   .btn-xl {
+    padding: 2vh 2vw;
+    font-size: 20px;
+    line-height: 1.2;
+    border-radius: 9px;
+    text-align: center; 
+    white-space: normal;
+    display: flex;        
+    align-items: center;  
+    justify-content: center;
+  } 
+
+  .custom-class {
+    margin-bottom: 25px;
+    line-height: 1.5em; /* adjust as needed */
+  }
+
+  .fixed-size {
+    width: 200px;  /* adjust as needed */
+    height: 100px; /* adjust as needed */
+    white-space: normal; /* to allow text to wrap to next line */
+  }
+
+  .light-blue {
+    background-color: rgb(50, 157, 245);
+    border-color: lightblue;
+    color: #000; /* change the text color to black for better visibility */
+  }
+
+  .green {
+    background-color: green;
+    border-color: green;
+    color: #fff; /* change the text color to white for better visibility */
+  }
+
+  .red {
+    background-color: red;
+    border-color: red;
+    color: #fff; /* change the text color to white for better visibility */
+  }
+
+  .center-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+   /* width: 320px;  /* adjust as needed */
+   /* height: 150px; /* adjust as needed */
+  }
+
+  .margin-top {
+    margin-top: 20px; /* adjust as needed */
+  }
+
+  .hover-effect:hover {
+    background-color: #e67c62; /* change the background color when hovered */
+    color: #fff; /* change the text color when hovered */
+  }
+
+  .light-blue, .green, .red {
+    color: #ffffff; /* change the text color to black */
+  }
+
+  .btn-primary:disabled {
+    background-color: rgb(161, 161, 161);
+    border-color: rgb(161, 161, 161);
+}
 /* 
   input[type='range']::-webkit-slider-thumb {
     -webkit-appearance: none;

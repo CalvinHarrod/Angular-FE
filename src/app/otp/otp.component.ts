@@ -38,8 +38,7 @@ export class OtpComponent implements OnInit {
   checkresult: boolean = false; 
   sentResult: boolean = false;
 
-  
-  
+  newGenToken: any;
 
   // constructor(private http: HttpClient){}
   constructor(
@@ -52,7 +51,7 @@ export class OtpComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  
+
 
   generatePassword() {
     const min = 1000; // Minimum 4-digit number
@@ -61,29 +60,6 @@ export class OtpComponent implements OnInit {
     const part2 = Math.floor(Math.random() * (max - min + 1) + min);
     this.password = `${part1}-${part2}`;
   }
-
-
-  // sentSMS(){
-
-  //     this.smsService.sendSms(
-  //       this.otpMobile,
-  //       '&smsMessage=',
-  //       this.message,
-  //       this.password
-  //       ).subscribe(
-  //         res => {
-  //           this.sentResult = res;
-  //           console.log("Sent SMS - Return Result is " + this.sentResult);
-  //         },
-  //         err => {
-  //           console.error('Error:', err);
-  //           alert("An error occurred while sent SMS. Please try again later.");
-  //         }
-  //       );
-
-  //     console.log("Sent SMS - Mobile number is " + this.otpMobile);
-      
-  // }
 
   sentSMS(){
 
@@ -122,29 +98,19 @@ export class OtpComponent implements OnInit {
    window.location.reload()
  }
 
-//  queryBackend() {
-//   this.mobileCheckService.checkMobile(this.otpMobile).subscribe(
-//     res => {
-//       this.checkresult = res;
-//       this.otpButton = true;
-//       console.log("this.checkresult b4 - this.handleResponse  " + this.checkresult);
-//       this.handleResponse();
-//     },
-//     err => {
-//       console.error('Error:', err);
-//       alert("An error occurred while checking the mobile number. Please try again later.");
-//     }
-//   );
-// }
 
 initToken() {
   // If the user doesn't have a token, get a new one
   this.tokenService.getInitToken(this.otpMobile).subscribe(
     tokenRes => {
       console.log('Init token received:', tokenRes.token);
+
+      // assign value to newGenToken
+      this.newGenToken = tokenRes.token;
+      this.sharedService.changeToken(this.newGenToken);
+
       // Save the new token in local storage
       localStorage.setItem('token', tokenRes.token);
-
       // Log the token after it's saved to local storage
       console.log('Token saved to local storage:', localStorage.getItem('token'));
 

@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "red-form-ver20": {
+    "red-form-ver24": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/red-form-ver20",
+            "outputPath": "dist/red-form-ver24",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
@@ -68,10 +68,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "prod-serve": {
-              "browserTarget": "red-form-ver20:build:production"
+              "browserTarget": "red-form-ver24:build:production"
             },
             "development": {
-              "browserTarget": "red-form-ver20:build:development"
+              "browserTarget": "red-form-ver24:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -79,7 +79,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "red-form-ver20:build"
+            "browserTarget": "red-form-ver24:build"
           }
         },
         "test": {

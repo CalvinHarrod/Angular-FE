@@ -1,21 +1,45 @@
 
 <div class="container">
+
+
+  <form class="col-md-4" #openPage="ngForm" *ngIf="firstPage" >
+    <div class="col-md-12">
+        <img src="assets/img/TVB_Logo_1.PNG" class="center-image">
+    </div>
+    <!-- existing form controls... -->
+    <div class="row">
+        <div class="col-md-12">
+            <H1 class="center-text">Wellcome to the RED SYSTEM</H1>
+        </div>
+    </div>
+    <div class="row custom-class margin-top">
+        <div class="col-12 col-sm-6">
+            <button class="btn btn-primary btn-lg btn-block btn-xl fixed-size light-blue hover-effect"
+                onclick="window.location.href='https://eform.tvb.com.hk:8888/login';">TVB Staff</button>
+        </div>
+        <div class="col-12 col-sm-6">
+            <button class="btn btn-primary btn-lg btn-block btn-xl fixed-size light-blue" disabled>TVB PA/AA</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-sm-6">
+            <button class="btn btn-primary btn-lg btn-block btn-xl fixed-size green hover-effect"
+                (click)="setPages()">Freelance Company</button>
+        </div>
+        <div class="col-12 col-sm-6">
+            <button class="btn btn-primary btn-lg btn-block btn-xl fixed-size red" disabled>Freelancer</button>
+        </div>
+    </div>
+</form>
     
-  <form class="col-md-4" #basicForm="ngForm" >
+  <form class="col-md-4" #basicForm="ngForm" *ngIf="secondPage">
   
           <img src="assets/img/tvb-logo.png">
-          <!-- <p>Wellcome to access TVB RED FROM System</p> -->
             
                 <div class="form-group">
 
                     <label for="mobileNum">Support HK Mobile only</label>
                     <div class="input-group mb-3" >
-                        <!-- <button class="btn btn-danger" 
-                                type="button" 
-                                (click)=sliderUpdate()
-                                id="input1" 
-                                [disabled]="inputMobile.length !== 8 || isButtonClicked  ">Submit
-                        </button> -->
 
                         <button class="btn btn-danger" 
                             type="button" 
@@ -23,20 +47,6 @@
                             id="input1" 
                             [disabled]="!inputField || isButtonClicked">Submit
                         </button>
-
-                        
-                        
-                        <!-- <input 
-                            required
-                            type="text"
-                            minlength="8" 
-                            maxlength="8"
-                            pattern="[0-9]{8}"
-                            class="form-control"
-                            id="mobileNum" 
-                            [(ngModel)]="inputMobile"
-                            name="mobile" 
-                            placeholder="Enter Mobile No: xxxxxxxx"> -->
 
 
                         <input 
@@ -46,14 +56,7 @@
                         id="inputField" 
                         [(ngModel)]="inputField"
                         name="inputField" 
-                        placeholder="Enter Mobile No or Email">
-                        <!-- (change)="checkInputType(inputField)"> -->
- 
-                        <!-- <div class="alert alert-danger" 
-                            *ngIf="basicForm.touched && !basicForm.valid">
-                            Please input 8 digits number
-                        
-                        </div> -->
+                        placeholder="Enter Mobile No">
                                 
                     </div>
 
@@ -87,22 +90,7 @@
                   </div>
 
 
-                 <!-- <p>HOME Input Mobile is {{inputMobile}}</p> -->
 
-                 <!--Route to CaptCha-->
-                <!-- <div *ngIf="visible"> -->
-                <!--------------------------------------->
-                <!-- <div *ngIf="basicForm.valid"> -->
-<!-- 
-                    <app-captcha (capRtnFunction)="capRtnFunction($event)"></app-captcha> -->
-                <!-- </div> -->
-                 <!--------------------------------------->
-
-                <!--Display when click Captcha-->
-                <!--------------------------------------->
-                <!-- <div *ngIf="captchaReturn"> -->
-                 <!--------------------------------------->
-                 <!-- <p>Visible value is {{visible}}</p> -->
                 <div *ngIf="visible">
                     <app-otp 
                     [otpMobile]='inputMobile'
@@ -165,9 +153,6 @@
                     (click)="auth()">Login</button> 
                 </div>
 
-                <!-- <p>Input Password Field status is {{inputPasswordField}}</p> -->
-                <!-- <p>Password is {{otpPassword}}</p> -->
-                <!-- <p>Input Password is {{userData.passwordField}}</p>  -->
 
                 <router-outlet></router-outlet>
     </form>  
