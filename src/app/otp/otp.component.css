@@ -1,42 +1,199 @@
-/* 
-.form-group{
-    position: relative;
-    margin-bottom: 15px;
-}   
-
-
-.form-input{
-    position: relative;
-    margin-bottom: 10px;
-    margin-top: 10px;
-    height: 40px;
-    background-color: #dfe7f3;
-
-}
-
-.form-control{
-    height: 40px;
-    background-color: #dfe7f3;
-    text-indent: 24px;
-    font-size: 15px ;
-    font-weight: bold;
-}
-.btn{
-    font-size: 15px;
-    font-weight: bold;
-    background-color: #dc3545;
-    border-color: #4f63e7;
-    border-radius: 5px;
-    height: 40px;
-}
-.form-control:focus{
-    background-color: hsl(84, 46%, 63%);
-    box-shadow: none;
+mat-slider {
+    width: 50%;
+  }
+  
+  @keyframes animateBackground {
+    from { background-position: 0 0; }
+    to { background-position: 0 100px; }
+  }
+  
+  body {
+    background-image: url('/Angular/test/red-form-ver18/src/assets/img/tvb-city.png');
+    animation: animateBackground 5s linear infinite;
+  }
+  
+  .center-text, .center-text-new {
+    text-align: center;
+    color: red;
+    margin-bottom: 20px; /* For .center-text-new */
+  }
+  
+  .btn-xl, .btn {
+    padding: 2vh 2vw;
+    font-size: 20px; /* This will be overridden by media queries for .btn-xl */
+    line-height: 1.2;
+    border-radius: 9px;
+    text-align: center;
+    white-space: normal;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .custom-class {
+    margin-bottom: 25px;
+    line-height: 1.5em;
+  }
+  
+  .fixed-size {
+    width: 200px;
+    height: 100px;
+    white-space: normal;
+  }
+  
+  .light-blue, .green, .red, .light-blue-new, .green-new, .red-new {
     color: #fff;
-    border-color: #4f63e7
-}
+  }
+  
+  .light-blue, .btn-primary.light-blue-new {
+    background-color: rgb(50, 157, 245);
+    border-color: lightblue;
+  }
+  
+  .green, .btn-primary.green-new {
+    background-color: green;
+    border-color: green;
+  }
+  
+  .red, .btn-primary.red-new {
+    background-color: red;
+    border-color: red;
+  }
+  
+  .center-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .margin-top {
+    margin-top: 20px;
+  }
+  
+  .hover-effect:hover, .hover-effect-new:hover,
+  .btn-primary.light-blue-new:hover,
+  .btn-primary.green-new:hover,
+  .btn-primary.red-new:hover {
+    background-color: #e67c62;
+    color: #fff;
+    opacity: 0.8; /* For new hover effects */
+  }
+  
+  .btn-primary:disabled {
+    background-color: rgb(161, 161, 161);
+    border-color: rgb(161, 161, 161);
+  }
+  
+  .button-grid-new {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Creates a 2-column layout */
+    gap: 10px; /* Adjusts the gap between buttons */
+    width: 100%; /* Ensures the grid takes the full width of its container */
+  }
+  
+  .button-grid-new .btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 10px; /* Adjust padding as needed */
+    width: 100%; /* Ensures buttons expand to fill their cell */
+    height: 100%; /* Optional: if you want to control the height to be uniform */
+  }
+  
+  @media (max-width: 768px) {
+    .button-grid-new {
+      grid-template-columns: 1fr; /* Stacks buttons vertically on smaller screens */
+    }
+  }
+  
+  .img-fluid {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 575.98px) { 
+    .btn-xl {
+        font-size: 3vw;
+    }
+  }
+  
+  @media (min-width: 576px) and (max-width: 767.98px) { 
+    .btn-xl {
+        font-size: 2vw;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .btn-xl {
+        font-size: 1.5vw;
+    }
+    .button-grid-new {
+      gap: 20px;
+    }
+    .btn {
+      padding: 15px;
+    }
+  }
+  
+  @media (min-width: 992px) and (max-width: 1199.98px) { 
+    .btn-xl {
+        font-size: 1vw;
+    }
+  }
+  
+  @media (min-width: 1200px) { 
+    .btn-xl {
+        font-size: 0.8vw;
+    }
+  }
+  
+  .custom-input-group {
+    display: flex;
+    align-items: stretch; /* Ensure the children fill the height */
+  }
+  
+  .custom-input, .custom-button {
+    flex: 1; /* Ensure input and button take up equal width */
+  }
+  
+  .custom-button {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  
+  .custom-input {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  
+  /* .input-group.mb-3 {
+    display: flex;
+    align-items: stretch; 
+  
+  .input-group.mb-3 .btn, .input-group.mb-3 .form-control {
+    flex: 1;
+    height: 38px; 
+  } */
+  
+  .input-group.mb-3 {
+    display: flex;
+    align-items: stretch; /* Ensure vertical alignment and matching heights */
+  }
+  
+  .input-group.mb-3 .form-control {
+    flex: 2; /* Input takes up 2/3 of the space */
+    height: 38px; /* Matching height */
+  }
+  
+  .input-group.mb-3 .btn {
+    flex: 1; /* Button takes up 1/3 of the space */
+    height: 38px; /* Matching height */
+  }
 
+  .common-height {
+    height: 40px; /* Example height, adjust as needed */
+  }
 
-::placeholder {
-   text-align: center; 
-}  */
+  

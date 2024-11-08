@@ -1,42 +1,6 @@
-
-.form-group{
-    position: relative;
-    margin-bottom: 15px;
-}   
-
-
-.form-input{
-    position: relative;
-    margin-bottom: 10px;
-    margin-top: 10px;
-    height: 40px;
-    background-color: #dfe7f3;
-
-}
-
-.form-control{
-    height: 40px;
-    background-color: #dfe7f3;
-    text-indent: 24px;
-    font-size: 15px ;
-    font-weight: bold;
-}
-.btn{
-    font-size: 15px;
-    font-weight: bold;
-    background-color: #dc3545;
-    border-color: #4f63e7;
-    border-radius: 5px;
-    height: 40px;
-}
-.form-control:focus{
-    background-color: hsl(84, 46%, 63%);
-    box-shadow: none;
-    color: #fff;
-    border-color: #4f63e7
-}
-
-
-::placeholder {
-   text-align: center; 
-} 
+.small-captcha {
+    transform: scale(0.8); /* Adjust the scale to make the captcha smaller */
+    transform-origin: 0 0; /* Ensure the scaling starts from the top-left corner */
+    width: 50%; /* Ensure the width is 100% to maintain responsiveness */
+    height: auto; /* Ensure the height is auto to maintain aspect ratio */
+  }

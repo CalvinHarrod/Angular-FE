@@ -12,16 +12,14 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class SmsService {
-  //private SENT_URL = 'http://10.161.169.13:7000/eform-application/ajax/sendSMS?mobile=';
 
-  // private SENT_URL = environment.smsMobile + 'eform-application/ajax/sendSMS?mobile=';
   private SENT_URL = environment.smsMobile;
 
   constructor(private http: HttpClient) { }
 
 
-  sendSms(mobile: string, password: string): Observable<any> {
-    const url = `${this.SENT_URL}/eform-application/ajax/sendSMS?mobile=${mobile}&password=${password}`;
+  sendSms(mobile: string): Observable<any> {
+    const url = `${this.SENT_URL}/eform-application/ajax/sendSMS?mobile=${mobile}`;
     console.log(`Request URL: ${url}`);
     return this.http.get(url);
 }

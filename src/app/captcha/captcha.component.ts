@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
-
 @Component({
   selector: 'app-captcha',
   templateUrl: './captcha.component.html',
@@ -8,24 +7,21 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 })
 export class CaptchaComponent implements OnInit {
 
-  @Output() capRtnFunction:EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() capRtnFunction: EventEmitter<boolean> = new EventEmitter<boolean>();
   
   captcha: string;
   email: string;
 
-  constructor(){
+  constructor() {
     this.captcha = '';
     this.email = 'tvb.redform@gmail.com';
   }
 
   ngOnInit(): void {}
 
-  resolved(captchaResponse: string){
+  resolved(captchaResponse: string): void {
     this.captcha = captchaResponse;
     console.log('resolved captcha with response: ' + this.captcha);
     this.capRtnFunction.emit(true);
-
   }
-
-
 }

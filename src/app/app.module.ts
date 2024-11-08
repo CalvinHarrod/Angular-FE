@@ -17,6 +17,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { FormControl, Validators } from '@angular/forms';
 import { TokenService } from './services/token.service';
+import { IpService } from './services/ip.service';
+
 
 @NgModule({
   declarations: [
@@ -38,7 +40,7 @@ import { TokenService } from './services/token.service';
    
     
   ],
-  providers: [],
+  providers: [IpService],
   bootstrap: [AppComponent]
 })
 

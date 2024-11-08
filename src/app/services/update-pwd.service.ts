@@ -10,9 +10,9 @@ export class UpdatePwdService {
 
   constructor(private http: HttpClient) { }
 
-  updatePassword(token: string, mobile: string ): Observable<any>  {
+  updatePassword(token: string, mobile: string, password: string ): Observable<any>  {
     const url = environment.updatePwd;
-    return this.http.post(url, {token,mobile});
+    return this.http.post(url, {token,mobile,password});
   }
 
 }

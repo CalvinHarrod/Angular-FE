@@ -6,8 +6,6 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class SharedService {
-
-  constructor() { }
   
   private triggerRedirectSource = new Subject<void>();
   triggerRedirect$ = this.triggerRedirectSource.asObservable();
@@ -15,7 +13,12 @@ export class SharedService {
   private tokenSource = new BehaviorSubject<string>('');
   currentToken = this.tokenSource.asObservable();
 
+  private sessionIdSource = new BehaviorSubject<string>('');
+  currentSessionId = this.sessionIdSource.asObservable();
 
+
+
+  constructor() { }
 
   changeToken(token: string) {
     this.tokenSource.next(token);
@@ -25,4 +28,10 @@ export class SharedService {
     console.log('triggerRedirect method called');
     this.triggerRedirectSource.next();
   }
+
+  changeSessionId(sessionId: string) {
+    this.sessionIdSource.next(sessionId);
+  }
+
+
 }

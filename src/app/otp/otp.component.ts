@@ -11,6 +11,16 @@ import { TokenService } from '../services/token.service';
 import { SharedService } from '../services/share.service';
 import { environment } from '../../environments/environment';
 
+// Place this code in a central part of your application, 
+// such as the main.ts file or at the beginning of the AppComponent
+
+if (environment.production) { // Only disable console in production
+  window.console.log = () => {};
+  window.console.warn = () => {};
+  window.console.error = () => {};
+  // Add any other console methods you want to disable
+}
+
 
 
 @Component({
@@ -21,6 +31,7 @@ import { environment } from '../../environments/environment';
 
 export class OtpComponent implements OnInit {
   @Input() otpMobile: any;
+  // @Input() otpSessionID: any;
   // @Input() otpButton: any;
 
   // @Output() parentFunction:EventEmitter<any> = new EventEmitter();
@@ -39,6 +50,8 @@ export class OtpComponent implements OnInit {
   sentResult: boolean = false;
 
   newGenToken: any;
+  
+  sessionID!: string;
 
   // constructor(private http: HttpClient){}
   constructor(
@@ -47,23 +60,40 @@ export class OtpComponent implements OnInit {
     private mobileCheckService: MobileCheckService,
     private smsService: SmsService,
     private tokenService: TokenService,
-    private sharedService: SharedService){}
-
-  ngOnInit(): void {}
+      private sharedService: SharedService){}
 
 
 
-  generatePassword() {
-    const min = 1000; // Minimum 4-digit number
-    const max = 9999; // Maximum 4-digit number
-    const part1 = Math.floor(Math.random() * (max - min + 1) + min);
-    const part2 = Math.floor(Math.random() * (max - min + 1) + min);
-    this.password = `${part1}-${part2}`;
+  // ngOnInit(): void {}
+
+    ngOnInit() {
+      this.getSessionID();
+    }
+
+  // generatePassword() {
+  //   const min = 1000; // Minimum 4-digit number
+  //   const max = 9999; // Maximum 4-digit number
+  //   const part1 = Math.floor(Math.random() * (max - min + 1) + min);
+  //   const part2 = Math.floor(Math.random() * (max - min + 1) + min);
+  //   this.password = `${part1}-${part2}`;
+  // }
+
+  getSessionID() {
+    this.sharedService.currentSessionId.subscribe(
+      sessionID => {
+        this.sessionID = sessionID;
+        console.log('Received Session ID:', this.sessionID);
+        // Now you can use the sessionID for your component's logic
+      },
+      error => {
+        console.error('Error retrieving session ID:', error);
+      }
+    );
   }
 
   sentSMS(){
 
-    this.smsService.sendSms(this.otpMobile, this.password).subscribe(
+    this.smsService.sendSms(this.otpMobile).subscribe(
       res => {
         this.sentResult = res;
         console.log("Sent SMS - Return Result is " + this.sentResult);
@@ -71,6 +101,8 @@ export class OtpComponent implements OnInit {
       err => {
         console.error('Error:', err);
         alert("An error occurred while sent SMS. Please try again later.");
+        this.reflresh();
+      
       }
     );
     
@@ -120,88 +152,82 @@ initToken() {
     tokenErr => {
       console.error('Error requesting init token:', tokenErr);
       alert("An error occurred while requesting an init token. Please try again later.");
+      this.reflresh();
     }
   );
 }
 
 
 queryBackend() {
-  this.mobileCheckService.checkMobile(this.otpMobile).subscribe(
-    res => {
+  // Subscribe to sessionID from the shared service
 
-            console.log('Response from checkMobile:', JSON.stringify(res, null, 2));
-            // alert("Response from checkMobile: " + res); 
 
-            console.log('Response result:', res.result);
-            console.log('Response message:', res.message);
 
-            // alert("check respond result ");
+    console.log('Session ID:', this.sessionID );
+    console.log('Mobile Number:', this.otpMobile );
+    this.mobileCheckService.checkMobile(this.otpMobile, this.sessionID).subscribe(
+      res => {
+        console.log('Response from checkMobile:', JSON.stringify(res, null, 2));
+        console.log('Response result:', res.result);
+        console.log('Response message1:', res.message1);
+        console.log('Response message2:', res.message2);
+        console.log('Response message3:', res.message3);
 
-            // Handle Special number
-            if (res.result === true && res.message === "jump") {
-                console.log('Special Jump from checkMobile:', res.result, 'Response message:', res.message);
+        if (res.message2 === "exceed") {
+          alert(res.message3);
+          this.reflresh();
+          return;
+        }
+
+        if (res.result === true && res.message1 === "jump") {
+          console.log('Special Jump from checkMobile:', res.result, 'Response message:', res.message1);
+          this.sharedService.triggerRedirect();
+          return;
+        }
+
+        if (res.result === true) {        
+          console.log('Response true from checkMobile:', res.result, 'Response message:', res.message1);
+          this.otpButton = true;
+          this.checkresult = true;
+          let token = localStorage.getItem('token');
+          console.log('Local storage:', localStorage);
+          console.log('Token before check:', token);
+
+          if (token) {
+            console.log('Token inside check:', token);
+            this.tokenService.authenticateToken(token, this.otpMobile).subscribe(
+              authRes => {
+                console.log('Token authenticated:', authRes);
                 this.sharedService.triggerRedirect();
-                return;
-            }
-
-              if (res.result === true ) {        
-              console.log('Response true from checkMobile:', res.result, 'Response message:', res.message);
-              this.otpButton = true;
-              this.checkresult = true;
-              // Get the token from local storage
-              let token = localStorage.getItem('token');
-              console.log('Local storage:', localStorage);
-              console.log('Token before check:', token);
-
-              if (token) {
-
-                    // Log the token
-                    console.log('Token inside check:', token);
-
-                    // If the user already has a token, authenticate it
-                    this.tokenService.authenticateToken(token, this.otpMobile).subscribe(
-                      authRes => {
-                        console.log('Token authenticated:', authRes);
-
-                        // Then call handleResponse
-                        //this.handleResponse();
-                        // Call Redirect and bypass sms authentication
-                        this.sharedService.triggerRedirect();
-                      },
-
-                      authErr => {
-                        if (authErr.status === 401) {
-                            console.error('Token has expired:', authErr);
-                            this.initToken();
-                            //this.handleResponse();
-                          } else if (authErr.status === 403) {
-                          console.error('Token not found:', authErr);
-                          this.initToken();
-                          //this.handleResponse();
-                          } else {
-                          console.error('An error occurred while authenticating the token:', authErr);
-                          // Redirect to homepage
-                          this.router.navigate([environment.homePage]);
-                        }
-                      }
-                    ); // end of subscribe
-
-              } else {
-                // If the user doesn't have a token, get a new one
-                this.initToken();
+              },
+              authErr => {
+                if (authErr.status === 401) {
+                  console.error('Token has expired:', authErr);
+                  this.initToken();
+                } else if (authErr.status === 403) {
+                  console.error('Token not found:', authErr);
+                  this.initToken();
+                } else {
+                  console.error('An error occurred while authenticating the token:', authErr);
+                  this.router.navigate([environment.homePage]);
+                }
               }
-            }else{
-              alert("Your input mobile is not valid. Please try again later.");
-              this.backTohomepage();
-              this.reloadPage();
-            }
-
-    },
-    err => {
-    console.error('Error:', err);
-    alert("An error occurred while checking the mobile number. Please try again later.");
-    }
-  );
+            );
+          } else {
+            this.initToken();
+          }
+        } else {
+          alert("Your input mobile is not valid. Please try again later.");
+          this.reflresh();
+        }
+      },
+      err => {
+        console.error('Error:', err);
+        alert("An error occurred while checking the mobile number. Please try again later.");
+        this.reflresh();
+      }
+    );
+  // });
 }
 
 
@@ -212,7 +238,7 @@ handleResponse() {
     this.otpButton = true;
     console.log("this.otpButton aft -  " + this.checkresult);
 
-    this.generatePassword();
+    // this.generatePassword();
     this.sentSMS(); // check-point 20231225
     this.triggerDownCount.emit();
     this.otpRtnFunction2.emit(this.checkresult);
@@ -220,8 +246,7 @@ handleResponse() {
   } else {
     alert("Your Mobile Number is not registered. Please contact your administrator.");
     this.otpButton = true;
-    this.backTohomepage();
-    this.reloadPage();
+    this.reflresh();
   }
 }
 
@@ -231,6 +256,11 @@ checkMobile() {
   this.queryBackend();
   
   //this.handleResponse();
+}
+
+reflresh() {
+  this.backTohomepage();
+  this.reloadPage();
 }
 
   

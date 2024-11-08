@@ -1,170 +1,128 @@
-
+<!-- Main Container -->
 <div class="container">
 
-
-  <form class="col-md-4" #openPage="ngForm" *ngIf="firstPage" >
+  <!-- First Page Form -->
+  <form class="col-md-4" *ngIf="firstPage" #openPage="ngForm">
+    <!-- Logo Section -->
     <div class="col-md-12">
-        <img src="assets/img/TVB_Logo_1.PNG" class="center-image">
+      <!-- Preloading the image -->
+      <link rel="preload" href="assets/img/tvb-logo.png" as="image">
+      <!-- <img src="assets/img/TVB_Logo_1.PNG" class="center-image img-fluid" alt="TVB Logo"> -->
+      <img src="assets/img/tvb-logo.png" class="center-image img-fluid" alt="TVB Logo">
     </div>
-    <!-- existing form controls... -->
-    <div class="row">
-        <div class="col-md-12">
-            <H1 class="center-text">Wellcome to the RED SYSTEM</H1>
-        </div>
+    <!-- Welcome Text -->
+    <h2 class="center-text-new blue-text">Welcome to the RED SYSTEM</h2>
+    <!-- Button Grid for Options -->
+    <div class="button-grid-new">
+      <!-- <button type="button" class="btn btn-primary light-blue-new hover-effect-new" onclick="window.location.href='https://eform.tvb.com.hk:8888/login';">TVB <br> Staff</button> -->
+      <button *ngIf="redFormButton" type="button" class="btn btn-danger light-blue-new hover-effect-new" (click)="navigateToLogin()">RED <br> FORM</button>
+      <button *ngIf="fourRunDownFormButton" type="button" class="btn btn-warning light-blue-new btn-disabled-grey" disabled>臨時/特約/輔警/小童<br>演員申請表</button>
+      <button *ngIf="freelanceCompanyButton" type="button" class="btn btn-success green-new hover-effect-new" (click)="setPages()">Freelance <br> (Company)</button>
+      <button *ngIf="freelancerButton" type="button" class="btn btn-success red-new btn-disabled-grey" disabled>Freelancer <br> (Individual) </button>
+      <button *ngIf="tvbAaButton" type="button" class="btn btn-primary light-blue-new btn-disabled-grey" disabled>TVB <br> AA</button>
+      <button *ngIf="tvbPaButton" type="button" class="btn btn-primary light-blue-new btn-disabled-grey" disabled>TVB <br> PA</button>
+      <button *ngIf="othersButton" type="button" class="btn btn-info light-blue-new hover-effect-new" (click)="navigateToLogin()">Other <br> Options</button>
+      <button *ngIf="tvbPaAaButton" type="button" class="btn btn-primary light-blue-new btn-disabled-grey" disabled>TVB <br> AA/PA</button>
+      <!-- <button (click)="showDisclaimerAlert()">Show Disclaimer</button> -->
     </div>
-    <div class="row custom-class margin-top">
-        <div class="col-12 col-sm-6">
-            <button class="btn btn-primary btn-lg btn-block btn-xl fixed-size light-blue hover-effect"
-                onclick="window.location.href='https://eform.tvb.com.hk:8888/login';">TVB Staff</button>
+
+  </form>
+
+  <div class="unique-disclaimer">
+    <div class="alert alert-success disclaimer-container" role="alert" *ngIf="disclaimer">
+        <div class="logo-container">
+            <!-- Preloading the image -->
+            <link rel="preload" href="assets/img/tvb-logo.png" as="image">
+            <img src="assets/img/tvb-logo.png" class="center-image img-fluid" alt="TVB Logo">
         </div>
-        <div class="col-12 col-sm-6">
-            <button class="btn btn-primary btn-lg btn-block btn-xl fixed-size light-blue" disabled>TVB PA/AA</button>
-        </div>
+        <div>
+         
+            <hr>
+            <h4 class="alert-heading">DISCLAIMER</h4>
+            <p class="mb-0 alert alert-success custom-alert-text">{{disclaimerText}}</p>
+            <br>
+              <div class="d-flex justify-content-end">
+                  <button type="button" class="btn btn-secondary btn-sm me-2" (click)="onCancel()">Cancel</button>
+                  <button type="button" class="btn btn-primary btn-sm" (click)="onAccept()">Accept</button>
+              </div>
+          </div>
     </div>
-    <div class="row">
-        <div class="col-12 col-sm-6">
-            <button class="btn btn-primary btn-lg btn-block btn-xl fixed-size green hover-effect"
-                (click)="setPages()">Freelance Company</button>
+  </div>
+
+    <!-- Second Page Form -->
+    <form class="col-md-4" #basicForm="ngForm" *ngIf="secondPage">
+      <!-- Logo -->
+      <img src="assets/img/tvb-logo.png" alt="TVB Logo" class="center-image img-fluid">
+      <!-- Mobile Number Input Section -->
+      <div class="form-group">
+        <label for="mobileNum" class="grep-color">Support HK Mobile only</label>
+
+        <div class="input-group mb-3">
+          <button class="btn btn-outline-info common-height" type="button" (click)=sliderUpdate() id="input1" [disabled]="!inputField || isButtonClicked">Submit</button>
+          <input required type="text" class="form-control common-height mobile-border" id="inputField" [(ngModel)]="inputField" name="inputField" placeholder="Enter Mobile No">
         </div>
-        <div class="col-12 col-sm-6">
-            <button class="btn btn-primary btn-lg btn-block btn-xl fixed-size red" disabled>Freelancer</button>
-        </div>
+
     </div>
-</form>
-    
-  <form class="col-md-4" #basicForm="ngForm" *ngIf="secondPage">
-  
-          <img src="assets/img/tvb-logo.png">
-            
-                <div class="form-group">
-
-                    <label for="mobileNum">Support HK Mobile only</label>
-                    <div class="input-group mb-3" >
-
-                        <button class="btn btn-danger" 
-                            type="button" 
-                            (click)=sliderUpdate()
-                            id="input1" 
-                            [disabled]="!inputField || isButtonClicked">Submit
-                        </button>
+    <!-- Slider Section -->
+    <!-- <div class="form-group" *ngIf="sliderflag">
+      <label for="slider">Please slide bar to full</label>
+      <input type="range" class="form-range" id="slider" name="slider" min="0" max="5" step="0.1" [(ngModel)]="sliderValue" (ngModelChange)="onSliderChange($event)" #slider="ngModel">
+    </div> -->
 
 
-                        <input 
-                        required
-                        type="text"
-                        class="form-control"
-                        id="inputField" 
-                        [(ngModel)]="inputField"
-                        name="inputField" 
-                        placeholder="Enter Mobile No">
-                                
-                    </div>
+    <app-captcha *ngIf="sliderflag" (capRtnFunction)="update()"></app-captcha>
 
-                </div>
+    <!-- Test Button Section -->
+    <div *ngIf="testflag" class="form-group d-grid gap-2">
+      <button class="btn btn-primary" type="button" (click)=redirect() id="button-addon1">Click to Test</button>
+    </div>
+    <!-- OTP Component Embedding -->
+    <div *ngIf="visible">
+      <app-otp [otpMobile]='inputMobile' (triggerDownCount)="downCount()" (otpRtnFunction1)="otpRtnFunction1($event)" (otpRtnFunction2)="otpRtnFunction2($event)"></app-otp>
+    </div>
+    <!-- Password Input Section -->
+    <div *ngIf="inputPasswordField">
+      <div class="input-group" style="align-items: center;">
+        <input required type="password" minlength="4" maxlength="4" pattern="\d{4}" 
+              class="form-control common-height input-password-border" 
+              id="passwordPart1" 
+              [(ngModel)]="inputPasswordPart1" 
+              name="passwordFieldPart1" 
+              placeholder="Pwd 1">
 
+        <div class="input-group-append">
+          <span class="input-group-text" style="font-size: 30px; color: black; border: none; background-color: white;">-</span>
+        </div>
+        <input required type="password" minlength="4" maxlength="4" pattern="\d{4}" 
+              class="form-control common-height input-password-border" 
+              id="passwordPart2" 
+              [(ngModel)]="inputPasswordPart2" 
+              name="passwordFieldPart2" 
+              placeholder="Pwd 2">
+        </div>
+      <!-- Password Expiry Countdown -->
+      <div>
+        <p style="color: red; font-size: small;">The password will expire after {{countdown}} seconds</p>
+      </div>
+    </div>
+    <!-- Login Button Section -->
+    <div *ngIf="inputPasswordPart1.length === 4 && inputPasswordPart2.length === 4" class="form-group d-grid gap-2">
+      <button class="btn btn-outline-danger common-height" type="submit" (click)="callUpdatePassword()">Login</button>
+    </div>
+    <!-- Router Outlet for Angular Routing -->
+    <router-outlet></router-outlet>
 
+    <div>
+      <a [href]="homepageUrl" class="back-to-homepage">Back to Homepage</a>
+    </div>
 
-                <div class="form-group" *ngIf="sliderflag">
-                    <label for="slider">Pleas slide bar to full</label>
-                    <input 
-                      type="range" 
-                      class="form-range" 
-                      id="slider"
-                      name="slider"
-                      min="0" max="5" 
-                      step="0.1" 
-                      [(ngModel)]="sliderValue"
-                      (ngModelChange)="onSliderChange($event)"
-                      #slider="ngModel">
-                    <!-- <p>Current value: {{ sliderValue }}</p> -->
-                  </div>
+  </form>
 
-                  <div *ngIf="testflag" class="form-group d-grid gap-2">
-                      <button class="btn btn-primary" 
-                              type="button" 
-                              (click)=redirect()
-                              id="button-addon1" >Click to Test
-                      </button>
-
-                      <P></P>
-                  </div>
-
-
-
-                <div *ngIf="visible">
-                    <app-otp 
-                    [otpMobile]='inputMobile'
-                    (triggerDownCount)="downCount()"
-                    (otpRtnFunction1)="otpRtnFunction1($event)"
-                    (otpRtnFunction2)="otpRtnFunction2($event)" ></app-otp>
-                </div> 
-              
-                <div *ngIf="inputPasswordField">
-                <!-- <div *ngIf="true"> -->
-                    <p></p>
-                <!-- <div *ngIf="true"> -->
-                    <div class="input-group" style="align-items: center;">
-                        <label for="passwordPart1"></label>
-                        <input 
-                            required
-                            type="password"
-                            minlength="4" 
-                            maxlength="4"
-                            pattern="\d{4}"
-                            class="form-control"
-                            id="passwordPart1" 
-                            [(ngModel)]="inputPasswordPart1"
-                            name="passwordFieldPart1" 
-                            placeholder="Password XXXX">
-                      
-                            <div class="input-group-append">
-                                <span 
-                                    class="input-group-text" 
-                                    style="font-size: 30px; color: black; border: none; background-color: white;">-</span>
-                              </div>
-                      
-                        <label for="passwordPart2"></label>
-                        <input 
-                            required
-                            type="password"
-                            minlength="4" 
-                            maxlength="4"
-                            pattern="\d{4}"
-                            class="form-control"
-                            id="passwordPart2" 
-                            [(ngModel)]="inputPasswordPart2"
-                            name="passwordFieldPart2" 
-                            placeholder="Password YYYY">                     
-                        
-                    </div>
-
-                    <div>
-                        <p style="color: red; font-size: small;">
-                            The password will expire on after {{countdown}} seconds</p>
-                    </div>
-                    
-                    
-                </div>
-
-                <div *ngIf="inputPasswordPart1.length === 4 && inputPasswordPart2.length === 4" class="form-group d-grid gap-2">
-                    <button 
-                    class="btn btn-success" 
-                    type="submit" 
-                    (click)="auth()">Login</button> 
-                </div>
+  <br>
+  <br>
 
 
-                <router-outlet></router-outlet>
-    </form>  
 
-    
+
 
 </div>
-
-
-   
-
- 
-  
-  
-  
